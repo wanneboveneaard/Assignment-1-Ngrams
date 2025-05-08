@@ -5,3 +5,5 @@ Created on Thu May  8 12:39:27 2025
 @author: wanne
 """
 
+def testje():
+    return True
