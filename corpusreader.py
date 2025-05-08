@@ -7,3 +7,5 @@ Created on Thu May  8 12:39:27 2025
 
 def testje():
     return True
+
+# dit is een notitie aan mevrouw Perczynska
