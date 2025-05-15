@@ -5,7 +5,8 @@ Created on Thu May  8 12:39:27 2025
 @author: wanne
 """
 
-import os, re
+import os
+import nltk
 
 class CorpusReader:
     """Read the contents of a directory of files, and return the results as
@@ -32,6 +33,7 @@ class CorpusReader:
 
     def _get_all_text(self):
         """Read all text in the corpus and return it as one string"""
+    
 
         all_text_list = [] # lijst waarvan elke tekstbestand 1 element is
 
@@ -50,12 +52,16 @@ class CorpusReader:
 
         text = self._get_all_text() # een lange string van alle files
 
-        lines = text.splitlines()
+        lines = nltk.sent_tokenize(text)
 
         tokenized_sentences = []
         
         for line in lines:
-            words = line.split() # elke line in woorden splitten
+            words = nltk.word_tokenize(line) # elke line in woorden splitten
             tokenized_sentences.append(words) # elke gesplitte line toevoegen aan lijst
+    
         
         return tokenized_sentences
+    
+corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus")
+sentences = corpus.sents()
