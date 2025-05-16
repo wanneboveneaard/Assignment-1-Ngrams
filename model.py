@@ -35,6 +35,10 @@ class NgramModel:
                     freq_dict[word] = 1
         return freq_dict
     
+    def probability(self, ngram, smoothing_constant=0.0):
+        if smoothing_constant == 0.0:
+            return Praw
+    
         
                     
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus") 
