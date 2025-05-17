@@ -1,10 +1,3 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  8 12:40:00 2025
-
-@author: wanne
-"""
-
 import re
 from corpusreader import CorpusReader
 
@@ -17,7 +10,7 @@ class NgramModel:
         self.clean_sentences = []
 
         for sentence in self.tokenized_sentences:
-            self.words_in_sentence = [n*"<s>"]
+            self.words_in_sentence = (n-1) * ["<s>"]
             for word in sentence:
                 if re.search(r"\b\w*\b", word): # \W stat voor letters
                     self.words_in_sentence.append(word.lower())
@@ -25,7 +18,10 @@ class NgramModel:
             self.clean_sentences.append(self.words_in_sentence)
             
     
-    def maak_freq_tab(self, clean_sentences): # maakt een frequency tabel
+    def maak_freq_tab(self, clean_sentences): 
+        """
+        Create freq table and ?
+        """
         freq_dict = dict()
         for sentence in clean_sentences:
             for i in range(n-1, len(sentence)):
@@ -34,12 +30,15 @@ class NgramModel:
                 else:
                     freq_dict[word] = 1
         return freq_dict
+
+    for sentence in clean_sentences:
+        prefix = (sentence[i], sentence[i+1])
     
     def probability(self, ngram, smoothing_constant=0.0):
         if smoothing_constant == 0.0:
-            return Praw
+
+            return P_raw
     
-        
                     
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus") 
                   
