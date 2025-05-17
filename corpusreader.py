@@ -1,21 +1,9 @@
-# -*- coding: utf-8 -*-
-"""
-Created on Thu May  8 12:39:27 2025
-
-@author: wanne
-"""
-
 import os
 import nltk
 
 class CorpusReader:
     """Read the contents of a directory of files, and return the results as
     either a list of lines or a list of words.
-
-    The pathname of the directory to read should be passed when
-    creating the class:
-
-    >>> reader = CorpusReader(r"path/to/dir")
     """
 
     def __init__(self, directory): # path/to/dir wordt doorgegeven aan __init__
