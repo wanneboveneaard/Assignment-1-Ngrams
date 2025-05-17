@@ -6,6 +6,7 @@ class NgramModel:
     def __init__(self, tokenized_sentences, n):
         """accepts a list of tokenized sentences and ...?"""
         self.tokenized_sentences = tokenized_sentences #  property
+        self.n = n # hiermee kan n ook in andere functiedefinities kunnen worden geimplementeerd direct
     
         self.clean_sentences = []
 
@@ -24,11 +25,13 @@ class NgramModel:
         """
         freq_dict = dict()
         for sentence in clean_sentences:
-            for i in range(n-1, len(sentence)):
-                if word in freq_dict:
-                    freq_dict[word] += 1
+            for i in range(len(sentence) - self.n + 1):
+                ngram = tuple(sentence[i:i+self.n])
+                if ngram in freq_dict:
+                    freq_dict[ngram] += 1
                 else:
-                    freq_dict[word] = 1
+                    freq_dict[ngram] = 1
+                    
         return freq_dict
 
     for sentence in clean_sentences:
