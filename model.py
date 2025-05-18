@@ -117,11 +117,26 @@ class NgramModel:
         if prob == 0.0:
             return float("inf")
         
-        def choose_succesor(self, prefix):
-            
+    def choose_succesor(self, prefix):
+        prefix_tuple = tuple(word.lower() for word in prefix)
+        if len(prefix_tuple) != self.n - 1:
+            raise ValueError(f"Prefix heeft verkeerde lengte")
+
+        if prefix_tuple not in self.ngram:
+            return None
+        
+        successors_dict = self.ngram[prefix_tuple]
+        if not successors_dict:
+            return None
+        
+        words = list(successors_dict.keys())
+        weights = list(successors_dict.values())
+        
+        chosen_word = random.choices(words, weights=weights, k=1)[0]
+        return chosen_word
                 
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus")
                   
-lol = NgramModel(corpus.sents()
+lol = NgramModel(corpus.sents())
 print(lol.clean_sentences[-100:])
 print(lol.maak_freq_tab(lol.clean_sentences))
