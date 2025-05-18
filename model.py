@@ -28,29 +28,12 @@ class NgramModel:
         
         self.ngram_counts = {}
         self.prefix_counts = {}
-        self.clean_sentences 
+        self.clean_sentences # is dit nodig?
         self.tokenized_sentences = tokenized_sentences #  property
 
         self.clean_sentences = []
-        self.maak_freq_tab()
-
- #       for sentence in tokenized_sentences:
-            # Verwijder tokens die alleen interpunctie zijn, zet om naar kleine letters
-#            sentence = [token.lower() for token in sentence if token not in string.punctuation]
-
-            # Voeg n-1 <s> tokens toe aan het begin en </s> aan het eind
- #           padded = ['<s>'] * (n - 1) + sentence + ['</s>']
-  #          self.vocab.update(padded)  # Voeg tokens toe aan de woordenschat
-
-            # Tel alle n-grammen en hun context
- #           for i in range(len(padded) - n + 1):
-  #              prefix = tuple(padded[i:i + n - 1])  # de eerste n-1 tokens (prefix)
-  #              word = padded[i + n - 1]  # het n-de token (het woord dat volgt op de prefix)
-  #              self.ngram_counts[prefix][word] += 1
-    #            self.context_counts[prefix] += 1
         
-        # test
-
+        self.maak_freq_tab() # is dit nodig?
 
         for sentence in self.tokenized_sentences:
             self.words_in_sentence = (n-1) *["<s>"]
@@ -113,11 +96,32 @@ class NgramModel:
             k = smoothing_constant
             V = len(self.vocabulary)
             return (ngram_count + k) / (context_count + k * V)
-
         
-
+    def perplexity(self, sentence, smoothing_constant=1.0):
+        
+        clean_sentence = (self.n - 1) * [n-1]
+        
+        for word in clean_sentence:
+            if re.search(r"\b\w*\b", word): # \W stat voor letters
+                self.clean_sentence.append(word.lower())
+                self.clean_sentence.append("</s>")
+                
+        if len(cleaned_sentences) < self.n:
+            return float("inf")
+        
+        for i in range(len(cleaned_sentences) - self.n +1):
+            ngram = tuple(cleaned_sentences[i:i + self.n])
+        
+        prob = self.probability(list(ngram), smoothing_constant)
+        
+        if prob == 0.0:
+            return float("inf")
+        
+        def choose_succesor(self, prefix):
+            
+                
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus")
                   
-lol = NgramModel(corpus.sents())
+lol = NgramModel(corpus.sents()
 print(lol.clean_sentences[-100:])
 print(lol.maak_freq_tab(lol.clean_sentences))
