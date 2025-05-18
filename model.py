@@ -1,12 +1,24 @@
+"""
+model.py implements an N-gram language model.
+authors: Mela, Wanne, Jacob
+"""
+
 import re
 from corpusreader import CorpusReader
 import random
 import math
 
 class NgramModel:
-    
+    """
+    accepts a list of tokenized sentences and builds n-gram model, 
+    and includes functions to calculate probabilities,
+    and perplexity.
+    """
     def __init__(self, tokenized_sentences, n):
-        """accepts a list of tokenized sentences and builds n-gram model"""
+        """
+        accepts a list of tokenized sentences,
+        and stores frequency tables
+        """
         self.n = n
         
         self.ngram_counts = {}
@@ -28,7 +40,10 @@ class NgramModel:
         self.ngram_freq = {}
         self.maak_freq_tab()
     
-    def maak_freq_tab(self): 
+    def maak_freq_tab(self):
+        """ 
+        creates frequency tables for n-grams
+        """
         for sentence in self.clean_sentences:
             for i in range(len(sentence) - self.n + 1):
                 prefix = tuple(sentence[i:i + (self.n - 1)])
@@ -41,21 +56,24 @@ class NgramModel:
 
                 self.context_freq[prefix] = self.context_freq.get(prefix, 0) + 1
 
-                # Voor successors
                 if prefix not in self.ngram_counts:
                     self.ngram_counts[prefix] = {}
                 if next_word not in self.ngram_counts[prefix]:
                     self.ngram_counts[prefix][next_word] = 0
                 self.ngram_counts[prefix][next_word] += 1
 
-                # Ook tellen in prefix_counts
                 self.prefix_counts[prefix] = self.prefix_counts.get(prefix, 0) + 1
     
     def probability(self, ngram, smoothing_constant=0.0):
-        for word in ngram:
-            if word not in self.vocabulary:
-                return 0.0
-        
+        """ 
+        calculates the probability of a given n-gram,
+        using optional add-k smoothing
+        """
+        if smoothing_constant == 0.0:
+            for word in ngram:
+                if word not in self.vocabulary:
+                    return 0.0    
+            
         context = tuple(ngram[:-1])
         target_word = ngram[-1]
         full_ngram = context + (target_word,)
@@ -74,6 +92,10 @@ class NgramModel:
             return (ngram_count + k) / (context_count + k * V)
         
     def perplexity(self, sentence, smoothing_constant=1.0):
+        """
+        calculates the perplexity of a given sentence,
+        lower perplexity means the sentence is more likely
+        """
         clean_sentence = (self.n - 1) * ["<s>"]
         for word in sentence:
             if re.search(r"\b\w+\b", word):
@@ -93,7 +115,11 @@ class NgramModel:
         
         return 2 ** (log_prob_sum / len(clean_sentence))
 
-    def choose_succesor(self, prefix):
+    def choose_successor(self, prefix):
+        """ 
+        randomly select a next word, when a prefix is given,
+        based on the learned frequencies
+        """
         prefix_tuple = tuple(word.lower() for word in prefix)
         if len(prefix_tuple) != self.n - 1:
             raise ValueError("Prefix heeft verkeerde lengte")
@@ -111,7 +137,6 @@ class NgramModel:
         chosen_word = random.choices(words, weights=weights, k=1)[0]
         return chosen_word
 
-# === TESTEN ===
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus")
 lol = NgramModel(corpus.sents(), 2)
-print(lol.ngram_counts)
+#print(lol.ngram_counts)

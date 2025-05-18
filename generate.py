@@ -3,19 +3,27 @@
 from corpusreader import CorpusReader
 from model import NgramModel
 import sys
+import nltk
 
 def generate_sentence(ngram_model):
     n = ngram_model.n
-    generated_sentence = ["<s>" * (n-1)]
+    generated_sentence = ["<s>"] * (n-1)
 
     while True:
         prefix = generated_sentence[-(n - 1):]
         next_word = ngram_model.choose_successor(prefix)
-        if next_word is None or "</s>":
+        if next_word is None or next_word == "</s>":
             break
         generated_sentence.append(next_word)
+        
+    sentence = generated_sentence[(n - 1):]
+    
+    if sentence:
+        sentence[0] = sentence[0].capitalize()
+        
+    sentence[-1] = sentence[-1] + "."
 
-    return generated_sentence
+    return sentence
 
 
 #executable section
@@ -31,17 +39,17 @@ if __name__ == "__main__":
     else:
         n = 2
 
-    # Stap 2: Lees corpus en maak model
+    # Lees corpus en maak model
     corpus = CorpusReader(corpus_path)
     sentences = corpus.sents()
     model = NgramModel(sentences, n)
 
-    # Stap 3: Genereer en print twee zinnen
+    # Genereer en print twee zinnen
     print("> " + " ".join(generate_sentence(model)))
     print()
     print("> " + " ".join(generate_sentence(model)))
 
-    # Stap 4: Bereken perplexities van gegeven zinnen
+    # Bereken perplexities van gegeven zinnen
     print("\nSentence perplexities:\n")
 
     test_sentences = [
@@ -52,7 +60,9 @@ if __name__ == "__main__":
         "Friends what is like are they about I best few my that."
     ]
 
-    for sent in test_sentences:
-        tokens = nltk.word_tokenize(sent)
+    for sentence in test_sentences:
+        tokens = nltk.word_tokenize(sentence)
         perplexity = model.perplexity(tokens)
-        print(f'"{sent}" -> Perplexity: {perplexity}')
+        print(f'"{sentence}" -> Perplexity: {perplexity}')
+
+print(model.choose_successor(["<s>"]))  # of ["<s>", "<s>"] bij trigram
