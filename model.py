@@ -25,9 +25,12 @@ class NgramModel:
             self.clean_sentences.append(self.words_in_sentence)""" "even comment van gemaakt"
 
         self.n = n  # grootte van de ngram
-        self.ngram_counts = defaultdict(lambda: defaultdict(int))  # telt hoeveel keer elk woord volgt op een prefix
-        self.context_counts = defaultdict(int)  # telt hoeveel keer elke prefix voorkomt
         self.vocab = set()  # verzameling unieke woorden (voor smoothing)
+        
+        self.ngram_counts = {}
+        self.prefix_counts ={}
+       
+        self.maak_freq_tab()
 
         for sentence in sentences:
             # Verwijder tokens die alleen interpunctie zijn, zet om naar kleine letters
@@ -47,12 +50,25 @@ class NgramModel:
     
     def maak_freq_tab(self, clean_sentences): # maakt een frequency tabel
         freq_dict = dict()
-        for sentence in clean_sentences:
-            for i in range(n-1, len(sentence)):
-                if word in freq_dict:
-                    freq_dict[word] += 1
-                else:
-                    freq_dict[word] = 1
+        
+        for sentence in self.clean_sentences:
+            for i in range(len(sentence) - self.n - 1):
+                    prefix = tuple(sentence[i:i+ (self.n - 1)])
+                    next_word = sentence[i+self.n - 1]
+                    #ngram = tuple(sentence[i:i+self.n])
+                    if prefix not in self.ngram_counts:
+                        self.ngram_counts[prefix] = {}
+                    
+                    if next_word not in self.ngram_counts[prefix]:
+                        self.ngram_counts[prefix][next_word] = 0
+                    
+                    self.ngram_counts[prefix][next_word] += 1
+                    
+                    if prefix not in self.prefix_counts:
+                        self.prefix_counts[prefix] = 0
+                    
+                    self.prefix_counts[prefix] += 1
+                
         return freq_dict
 
     def probability(self, ngram, smoothing_constant=0.0):
@@ -61,6 +77,7 @@ class NgramModel:
             raise ValueError(f"Ngram moet lengte {self.n} hebben")
 
         prefix = tuple(ngram[:-1])  # eerste n-1 woorden
+        
         word = ngram[-1]  # het woord dat we willen voorspellen
         if prefix not in self.context_counts:
             return 0.0  # prefix onbekend => kans is 0
@@ -77,7 +94,7 @@ class NgramModel:
         else:
             # add-k smoothing
             return (word_count + smoothing_constant) / (prefix_count + smoothing_constant * V)
-
+        
 
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus")
                   
