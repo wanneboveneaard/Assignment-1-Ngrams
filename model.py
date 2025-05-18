@@ -18,6 +18,12 @@ class NgramModel:
             self.words_in_sentence.append("</s>")
             self.clean_sentences.append(self.words_in_sentence)
             
+        self.ngram_counts = {}
+        self.prefix_counts ={}
+        
+        self.maak_freq_tab()
+        
+            
     
     def maak_freq_tab(self, clean_sentences): 
         """
@@ -25,13 +31,23 @@ class NgramModel:
         """
         freq_dict = dict()
         for sentence in clean_sentences:
-            for i in range(len(sentence) - self.n + 1):
-                ngram = tuple(sentence[i:i+self.n])
-                if ngram in freq_dict:
-                    freq_dict[ngram] += 1
-                else:
-                    freq_dict[ngram] = 1
-                    
+            for i in range(len(sentence) - self.n - 1):
+                prefix = tuple(sentence[i:i+ (self.n - 1)])
+                next_word = sentence[i+self.n - 1]
+                #ngram = tuple(sentence[i:i+self.n])
+                if prefix not in self.ngram_counts:
+                    self.ngram_counts[prefix] = {}
+                
+                if next_word not in self.ngram_counts[prefix]:
+                    self.ngram_counts[prefix][next_word] = 0
+                
+                self.ngram_counts[prefix][next_word] += 1
+                
+                if prefix not in self.prefix_counts:
+                    self.prefix_counts[prefix] = 0
+                
+                self.prefix_counts[prefix] += 1
+                
         return freq_dict
     
    
