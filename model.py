@@ -34,23 +34,7 @@ class NgramModel:
                     
         return freq_dict
     
-    def probability(self, ngram, smoothing_constant=0.0):
-        prefix = tuple(ngram[:-1]) # Ik houd van pizza, n=3, prefix: houd van pizza / houd van whatever
-        word = ngram[-1]
-        
-        prefix_count =  self.freq_dict.get(prefix, 0)
-        word_count = self.freq_dict.get(word, 0)
-        
-        if word_count == 0:
-            P_raw = 0
-        
-        if smoothing_constant == 0.0:
-            P_raw = prefix_count / word_count
-        else: 
-            # met add-k smoothing
-           
-        return P_raw
-                    
+   
 corpus = CorpusReader(r"C:\Users\wanne\Downloads\Computational Linguistics\small-corpus") 
                   
 lol = NgramModel(corpus.sents(), 3)
